@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "pencil-design": {
+      "source": "joneshong-skills/pencil-design",
+      "sourceType": "github",
+      "computedHash": "5abe4d1b47f0bd61ef198c55719ab23fb431fce657b6ccf903541335f6d687d5"
+    }
+  }
+}
