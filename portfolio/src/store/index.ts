@@ -17,7 +17,7 @@ import chatReducer from './slices/chatSlice';
 const repoPersistConfig = {
   key: 'repo-nested',
   storage,
-  blacklist: ['indexedFiles'],
+  blacklist: ['indexedFiles', 'repoPath'],
 };
 
 const rootReducer = combineReducers({

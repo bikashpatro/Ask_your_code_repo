@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import { setRepoPath, addRepository, setIndexedFiles } from '@/store/slices/repoSlice';
+import { newSession } from '@/store/slices/chatSlice';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { IndexedFile } from '@/types';
@@ -124,6 +125,12 @@ export default function RepoInput() {
       })
     );
 
+    dispatch(newSession({
+      id: Date.now().toString(),
+      repoId: repoPath,
+      messages: [],
+    }));
+
     setIsIndexing(false);
     router.push('/qa');
   };
@@ -179,7 +186,7 @@ export default function RepoInput() {
         {/* Start indexing button */}
         <Button
           onClick={handleStartIndexing}
-          disabled={!repoPath.trim() || isIndexing || browsing}
+          disabled={!repoPath.trim() || pendingFiles.length === 0 || isIndexing || browsing}
           className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-medium gap-2"
         >
           {isIndexing ? (

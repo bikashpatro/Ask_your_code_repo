@@ -1,0 +1,95 @@
+# ============================================================
+# CodeSearch AI — System Requirements & Setup Guide
+# ============================================================
+# This is a Next.js (Node.js) project, not Python.
+# Follow the steps below to run it on any PC.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# STEP 1 — Install Node.js (v18 or higher recommended)
+# ------------------------------------------------------------
+# Download from: https://nodejs.org/en/download
+# Verified working on: v24.13.0
+#
+# After install, verify:
+#   node --version
+#   npm --version
+
+
+# ------------------------------------------------------------
+# STEP 2 — Install pnpm (package manager used by this project)
+# ------------------------------------------------------------
+# Run in terminal:
+#   npm install -g pnpm
+#
+# After install, verify:
+#   pnpm --version
+
+
+# ------------------------------------------------------------
+# STEP 3 — Install project dependencies
+# ------------------------------------------------------------
+# Navigate to the portfolio folder and run:
+#   cd portfolio
+#   pnpm install
+
+
+# ------------------------------------------------------------
+# STEP 4 — Set up environment variables
+# ------------------------------------------------------------
+# Create a file named .env.local inside the portfolio/ folder:
+#   portfolio/.env.local
+#
+# Add the following line with your actual Groq API key:
+#   GROQ_API_KEY=your_groq_api_key_here
+#
+# Get a free Groq API key at: https://console.groq.com
+
+
+# ------------------------------------------------------------
+# STEP 5 — Run the development server
+# ------------------------------------------------------------
+#   cd portfolio
+#   pnpm dev
+#
+# Then open in browser: http://localhost:3000
+
+
+# ------------------------------------------------------------
+# KEY npm PACKAGES (auto-installed by pnpm install)
+# ------------------------------------------------------------
+# next@16.2.2              — React framework (App Router)
+# react@19.2.4             — UI library
+# react-dom@19.2.4         — React DOM renderer
+# @reduxjs/toolkit         — State management
+# redux-persist            — Persist Redux state to localStorage
+# react-redux              — React bindings for Redux
+# groq-sdk                 — Groq AI API client
+# @anthropic-ai/sdk        — Anthropic Claude API client
+# tailwindcss              — Utility-first CSS framework
+# framer-motion            — Animations
+# lucide-react             — Icon library
+# shadcn                   — UI component library
+# mermaid                  — Diagram rendering
+# docx                     — Word document generation
+# file-saver               — File download utility
+# typescript               — TypeScript compiler
+# eslint                   — Linter
+
+
+# ------------------------------------------------------------
+# BROWSER REQUIREMENT
+# ------------------------------------------------------------
+# Use Google Chrome or Microsoft Edge.
+# The Browse/Re-index feature uses the File System Access API
+# which is NOT supported in Firefox or Safari.
+
+
+# ------------------------------------------------------------
+# OPTIONAL — VS Code Extensions
+# ------------------------------------------------------------
+# - ESLint
+# - Tailwind CSS IntelliSense
+# - Prettier
+# - TypeScript and JavaScript Language Features (built-in)
