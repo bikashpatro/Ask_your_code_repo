@@ -48,7 +48,7 @@ function QATopBar() {
         <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center">
           <Code2 size={11} className="text-white" />
         </div>
-        <span className="text-xs font-semibold text-white">CodeSearch AI</span>
+        <span className="text-xs font-semibold text-white">RepoBrainAI</span>
       </Link>
 
       {/* Search bar */}

@@ -158,7 +158,7 @@ export async function exportMessageAsDocx(
   message: ChatMessage,
   repoName: string
 ): Promise<void> {
-  const title = `CodeSearch AI — ${repoName}`;
+  const title = `RepoBrainAI — ${repoName}`;
   const timestamp = new Date().toLocaleString();
 
   const bodyChildren: (Paragraph | Table)[] = [

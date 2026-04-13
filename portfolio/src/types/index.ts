@@ -1,5 +1,5 @@
 // types/index.ts
-// Shared TypeScript interfaces for the CodeSearch AI app
+// Shared TypeScript interfaces for the RepoBrainAI app
 
 export interface Repository {
   id: string;

@@ -150,7 +150,7 @@ function techTable(headers: string[], rows: string[][]): Table {
 function coverPage(): Paragraph[] {
   return [
     new Paragraph({ spacing: { before: 1200 }, children: [] }),
-    title('CodeSearch AI'),
+    title('RepoBrainAI'),
     subtitle('AI-Powered Codebase Intelligence Platform'),
     new Paragraph({ spacing: { before: 400 }, children: [] }),
     new Paragraph({
@@ -175,7 +175,7 @@ function objectiveSection(): (Paragraph | Table)[] {
   return [
     sectionHeading('Objective', '1.'),
     body(
-      'The primary objective of CodeSearch AI is to build an intelligent, AI-powered platform that enables software developers and teams to interact with their codebases using natural language queries. Rather than manually navigating thousands of files, developers can ask questions in plain English and receive accurate, citation-backed answers sourced directly from their repository.'
+      'The primary objective of RepoBrainAI is to build an intelligent, AI-powered platform that enables software developers and teams to interact with their codebases using natural language queries. Rather than manually navigating thousands of files, developers can ask questions in plain English and receive accurate, citation-backed answers sourced directly from their repository.'
     ),
     body('Specific objectives include:'),
     bullet('Enable natural language querying of any local code repository.'),
@@ -211,7 +211,7 @@ function proposedSolutionSection(): (Paragraph | Table)[] {
   return [
     sectionHeading('Proposed Solution', '3.'),
     body(
-      'CodeSearch AI addresses these problems by combining a modern web interface with a powerful AI backend to create a codebase question-answering (QA) system that works with any local repository.'
+      'RepoBrainAI addresses these problems by combining a modern web interface with a powerful AI backend to create a codebase question-answering (QA) system that works with any local repository.'
     ),
     subHeading('Core Features'),
     boldBullet('Folder-based Indexing:', 'Users select a local repository folder via the browser\'s File System Access API. Files are scanned client-side — no code is uploaded to any server.'),
@@ -232,7 +232,7 @@ function proposedSolutionSection(): (Paragraph | Table)[] {
 function architectureSection(): (Paragraph | Table)[] {
   return [
     sectionHeading('System Architecture', '4.'),
-    body('CodeSearch AI follows a two-layer architecture:'),
+    body('RepoBrainAI follows a two-layer architecture:'),
     subHeading('4.1  Frontend (Next.js App Router)'),
     body('The frontend is built with Next.js 16 using the App Router pattern. It handles all user interaction, file indexing, state management, and rendering.'),
     body('Key frontend components:'),
@@ -285,7 +285,7 @@ function securitySection(): (Paragraph | Table)[] {
   return [
     sectionHeading('Security and Data Privacy', '6.'),
     body(
-      'CodeSearch AI is designed with a privacy-first philosophy. Unlike cloud-based code intelligence tools, it does not require users to upload their source code to any remote server.'
+      'RepoBrainAI is designed with a privacy-first philosophy. Unlike cloud-based code intelligence tools, it does not require users to upload their source code to any remote server.'
     ),
     subHeading('6.1  Data Handling'),
     boldBullet('File System Access API:', 'The browser\'s native directory picker is used to read files. The browser sandbox ensures only the selected directory is accessible — no other files on the system can be read.'),
@@ -356,9 +356,9 @@ function useCasesSection(): (Paragraph | Table)[] {
     subHeading('Use Case 3 — DO-178C Compliance Documentation'),
     body('An aerospace software team needs design documentation to certify their C++ codebase against the DO-178C avionics standard. They index the repository, ask for a design document, and export the AI\'s structured response as a Word document with headings, bullet points, and code references.'),
     subHeading('Use Case 4 — Onboarding a New Developer'),
-    body('A new developer needs to understand a large open-source C++ project (nlohmann/json). They clone the repo, index it in CodeSearch AI, and ask: "Explain the JSON parser architecture." The AI provides a clear explanation with file citations, helping the developer get productive in minutes instead of days.'),
+    body('A new developer needs to understand a large open-source C++ project (nlohmann/json). They clone the repo, index it in RepoBrainAI, and ask: "Explain the JSON parser architecture." The AI provides a clear explanation with file citations, helping the developer get productive in minutes instead of days.'),
     subHeading('Use Case 5 — Capstone Project Documentation'),
-    body('A student needs to submit a capstone project report. They use CodeSearch AI\'s built-in report generator to produce a professional Word document covering all required sections — Objective, Problem Statement, Architecture, Tech Stack, and more — in minutes.'),
+    body('A student needs to submit a capstone project report. They use RepoBrainAI\'s built-in report generator to produce a professional Word document covering all required sections — Objective, Problem Statement, Architecture, Tech Stack, and more — in minutes.'),
     divider(),
   ];
 }
@@ -367,7 +367,7 @@ function conclusionSection(): (Paragraph | Table)[] {
   return [
     sectionHeading('Conclusion', '10.'),
     body(
-      'CodeSearch AI represents a practical, privacy-first solution to one of software development\'s most persistent challenges: understanding and navigating complex codebases. By combining the power of large language models (Llama 3.3 70B via Groq) with a modern React/Next.js frontend, the platform delivers an intuitive, conversational interface that makes codebase intelligence accessible to developers of all experience levels.'
+      'RepoBrainAI represents a practical, privacy-first solution to one of software development\'s most persistent challenges: understanding and navigating complex codebases. By combining the power of large language models (Llama 3.3 70B via Groq) with a modern React/Next.js frontend, the platform delivers an intuitive, conversational interface that makes codebase intelligence accessible to developers of all experience levels.'
     ),
     body(
       'The project successfully demonstrates the application of Generative AI techniques — including context-aware prompting, structured output parsing, and diagram generation — to a real-world software engineering problem. It achieves this without requiring users to compromise on code privacy, pay for cloud services, or install complex infrastructure.'
@@ -376,7 +376,7 @@ function conclusionSection(): (Paragraph | Table)[] {
       'Future enhancements will focus on implementing a full RAG (Retrieval-Augmented Generation) pipeline that reads and embeds actual file contents, enabling the AI to answer questions with deeper code-level understanding. Support for multiple simultaneous repositories and IDE integrations are also planned.'
     ),
     body(
-      'CodeSearch AI is a demonstration of how Generative AI can meaningfully accelerate software development workflows — from onboarding and code review to documentation generation and architectural analysis.'
+      'RepoBrainAI is a demonstration of how Generative AI can meaningfully accelerate software development workflows — from onboarding and code review to documentation generation and architectural analysis.'
     ),
   ];
 }
@@ -407,8 +407,8 @@ export async function generateCapstoneReport(): Promise<void> {
   ];
 
   const doc = new Document({
-    creator: 'CodeSearch AI',
-    title: 'CodeSearch AI — Capstone Project Report',
+    creator: 'RepoBrainAI',
+    title: 'RepoBrainAI — Capstone Project Report',
     description: 'AI-Powered Codebase Intelligence Platform — Capstone Report',
     styles: {
       paragraphStyles: [
@@ -436,5 +436,5 @@ export async function generateCapstoneReport(): Promise<void> {
   });
 
   const blob = await Packer.toBlob(doc);
-  saveAs(blob, `CodeSearch-AI-Capstone-Report-${Date.now()}.docx`);
+  saveAs(blob, `RepoBrainAI-Capstone-Report-${Date.now()}.docx`);
 }

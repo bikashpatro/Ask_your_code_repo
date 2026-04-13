@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: `You are CodeSearch AI, an expert code assistant. You help developers understand their codebase.
+          content: `You are RepoBrainAI, an expert code assistant. You help developers understand their codebase.
 ${fileContext}
 
 When answering:

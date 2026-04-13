@@ -1,6 +1,6 @@
 // store/index.ts
 // Redux store with redux-persist
-// Root key kept as "codesearch-ai-v2" to preserve existing chat history.
+// Root key kept as "repobrainai-v1" to preserve existing chat history.
 // indexedFiles excluded via nested repo config (too large for localStorage).
 
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
 
 // Root config — same key as before so existing chat history is preserved.
 const rootPersistConfig = {
-  key: 'codesearch-ai-v2',
+  key: 'repobrainai-v1',
   storage,
   whitelist: ['chat', 'repo'],
 };

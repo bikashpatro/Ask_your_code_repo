@@ -15,7 +15,7 @@ export default function Navbar() {
         <div className="w-6 h-6 rounded bg-violet-600 flex items-center justify-center">
           <Code2 size={14} className="text-white" />
         </div>
-        <span className="text-sm font-semibold text-white">CodeSearch AI</span>
+        <span className="text-sm font-semibold text-white">RepoBrainAI</span>
       </Link>
 
       <div className="flex items-center gap-6">

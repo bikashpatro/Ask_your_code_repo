@@ -47,7 +47,7 @@ function MessageBubble({ message, repoName }: { message: ChatMessage; repoName: 
           <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center">
             <Code2 size={11} className="text-white" />
           </div>
-          <span className="text-xs font-medium text-slate-400">CodeSearch AI</span>
+          <span className="text-xs font-medium text-slate-400">RepoBrainAI</span>
         </div>
         <button
           onClick={handleExportDocx}
@@ -108,7 +108,7 @@ function TypingIndicator() {
         <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center">
           <Code2 size={11} className="text-white" />
         </div>
-        <span className="text-xs font-medium text-slate-400">CodeSearch AI</span>
+        <span className="text-xs font-medium text-slate-400">RepoBrainAI</span>
       </div>
       <div className="bg-[#161b22] border border-white/10 rounded-xl rounded-tl-sm px-4 py-3 flex items-center gap-2">
         <Loader2 size={13} className="text-violet-400 animate-spin" />

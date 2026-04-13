@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeSearch AI — Ask Your Codebase Anything",
+  title: "RepoBrainAI — Ask Your Codebase Anything",
   description: "Index any repository and get instant, citation-backed answers powered by Claude AI.",
 };
 
