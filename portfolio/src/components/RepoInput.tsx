@@ -1,48 +1,34 @@
 // components/RepoInput.tsx
-// Repository path input — uses File System Access API (no upload dialog)
+// Repository input — supports local folder (File System Access API) and GitHub URL
 
 'use client';
 
 import { useState } from 'react';
-import { Folder, FolderSearch, Plus, Loader2 } from 'lucide-react';
+import { Folder, FolderSearch, Plus, Loader2, GitBranch, Link } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
+import { useAppDispatch } from '@/hooks/useAppStore';
 import { setRepoPath, addRepository, setIndexedFiles } from '@/store/slices/repoSlice';
 import { newSession } from '@/store/slices/chatSlice';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { IndexedFile } from '@/types';
 
-// Extended type for File System Access API (not fully typed in TS lib yet)
-interface FSHandle {
-  kind: 'file' | 'directory';
-  name: string;
-}
+// Extended type for File System Access API
+interface FSHandle { kind: 'file' | 'directory'; name: string; }
 interface FSDirHandle extends FSHandle {
   kind: 'directory';
   entries(): AsyncIterable<[string, FSHandle]>;
 }
 
-// Recursively collect all files from a directory handle
-async function collectFiles(
-  dirHandle: FSDirHandle,
-  prefix = ''
-): Promise<IndexedFile[]> {
+// Recursively collect all files from a local directory handle
+async function collectFiles(dirHandle: FSDirHandle, prefix = ''): Promise<IndexedFile[]> {
   const results: IndexedFile[] = [];
-
   for await (const [name, handle] of dirHandle.entries()) {
     if (handle.kind === 'file') {
-      results.push({
-        id: '',
-        name,
-        path: prefix ? `${prefix}/${name}` : name,
-      });
+      results.push({ id: '', name, path: prefix ? `${prefix}/${name}` : name });
     } else if (handle.kind === 'directory') {
-      const sub = await collectFiles(
-        handle as unknown as FSDirHandle,
-        prefix ? `${prefix}/${name}` : name
-      );
+      const sub = await collectFiles(handle as unknown as FSDirHandle, prefix ? `${prefix}/${name}` : name);
       results.push(...sub);
     }
   }
@@ -65,74 +51,106 @@ function detectLanguage(files: IndexedFile[]): string {
   return map[top] ?? 'Unknown';
 }
 
+type Tab = 'local' | 'github';
+
 export default function RepoInput() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const repoPath = useAppSelector((s) => s.repo.repoPath);
 
+  const [tab, setTab] = useState<Tab>('local');
+  const [repoName, setRepoName] = useState('');
   const [pendingFiles, setPendingFiles] = useState<IndexedFile[]>([]);
   const [isIndexing, setIsIndexing] = useState(false);
   const [browsing, setBrowsing] = useState(false);
+  const [githubUrl, setGitBranchUrl] = useState('');
+  const [githubError, setGitBranchError] = useState('');
 
-  // Use File System Access API — no browser upload dialog
+  // Handle local folder browse via File System Access API
   const handleBrowse = async () => {
-    // Fallback: browser doesn't support showDirectoryPicker
     if (!('showDirectoryPicker' in window)) {
       alert('Your browser does not support the folder picker. Please use Chrome or Edge.');
       return;
     }
-
     setBrowsing(true);
     try {
       const dirHandle = await (window as unknown as {
         showDirectoryPicker: (opts?: { mode?: string }) => Promise<FSDirHandle>;
       }).showDirectoryPicker({ mode: 'read' });
 
+      setRepoName(dirHandle.name);
       dispatch(setRepoPath(dirHandle.name));
-
-      // Recursively gather all files — no upload dialog
       const files = await collectFiles(dirHandle);
-      // Re-number ids after recursion
-      const indexed = files.map((f, i) => ({ ...f, id: String(i + 1) }));
-      setPendingFiles(indexed);
+      setPendingFiles(files.map((f, i) => ({ ...f, id: String(i + 1) })));
     } catch (err: unknown) {
-      // User cancelled — not an error
-      if (err instanceof Error && err.name !== 'AbortError') {
-        console.error(err);
-      }
+      if (err instanceof Error && err.name !== 'AbortError') console.error(err);
     } finally {
       setBrowsing(false);
     }
   };
 
-  // Start indexing: populate Redux and navigate to Q&A
-  const handleStartIndexing = async () => {
-    if (!repoPath.trim()) return;
-    setIsIndexing(true);
+  // Fetch file tree from GitHub API via backend route
+  const handleGitBranchFetch = async () => {
+    if (!githubUrl.trim()) return;
+    setGitBranchError('');
+    setBrowsing(true);
+    setPendingFiles([]);
+    try {
+      const res = await fetch('/api/github-index', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: githubUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setGitBranchError(data.error ?? 'Failed to fetch repository');
+        return;
+      }
+      setRepoName(data.repoName);
+      dispatch(setRepoPath(data.repoName));
+      setPendingFiles(data.files);
+      if (data.truncated) {
+        setGitBranchError('Repository is very large — only first 100,000 files shown.');
+      }
+    } catch {
+      setGitBranchError('Network error. Please check your connection.');
+    } finally {
+      setBrowsing(false);
+    }
+  };
 
+  // Dispatch indexed files to Redux and navigate to Q&A
+  const handleStartIndexing = async () => {
+    if (!repoName.trim() || pendingFiles.length === 0) return;
+    setIsIndexing(true);
     await new Promise((r) => setTimeout(r, 600));
 
     const language = detectLanguage(pendingFiles);
     dispatch(setIndexedFiles(pendingFiles));
-    dispatch(
-      addRepository({
-        id: Date.now().toString(),
-        name: repoPath,
-        path: repoPath,
-        language,
-        status: 'indexed',
-        filesIndexed: pendingFiles.length,
-      })
-    );
-
+    dispatch(addRepository({
+      id: Date.now().toString(),
+      name: repoName,
+      path: tab === 'github' ? githubUrl : repoName,
+      language,
+      status: 'indexed',
+      filesIndexed: pendingFiles.length,
+    }));
     dispatch(newSession({
       id: Date.now().toString(),
-      repoId: repoPath,
+      repoId: repoName,
       messages: [],
     }));
 
     setIsIndexing(false);
     router.push('/qa');
+  };
+
+  // Switch tab and reset state
+  const handleTabSwitch = (t: Tab) => {
+    setTab(t);
+    setPendingFiles([]);
+    setRepoName('');
+    setGitBranchError('');
+    dispatch(setRepoPath(''));
   };
 
   return (
@@ -143,50 +161,100 @@ export default function RepoInput() {
       className="w-full max-w-xl mx-auto"
     >
       <div className="bg-[#161b22] border border-white/10 rounded-xl p-5 flex flex-col gap-4">
-        <label className="text-xs text-slate-400 font-medium">Repository Path</label>
 
-        {/* Path input row */}
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Folder size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-            <Input
-              value={repoPath}
-              onChange={(e) => {
-                dispatch(setRepoPath(e.target.value));
-                setPendingFiles([]);
-              }}
-              placeholder="Select a folder or type a path…"
-              className="pl-8 bg-[#0d1117] border-white/10 text-slate-200 text-sm placeholder:text-slate-600 focus-visible:ring-violet-500"
-            />
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleBrowse}
-            disabled={browsing}
-            className="border-white/10 bg-[#0d1117] text-slate-300 hover:text-white text-xs gap-1.5 shrink-0"
+        {/* Tab toggle */}
+        <div className="flex gap-1 bg-[#0d1117] rounded-lg p-1">
+          <button
+            onClick={() => handleTabSwitch('local')}
+            className={`flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded-md transition-all ${
+              tab === 'local'
+                ? 'bg-violet-600 text-white font-medium'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
           >
-            {browsing ? (
-              <Loader2 size={13} className="animate-spin" />
-            ) : (
-              <FolderSearch size={13} />
-            )}
-            {browsing ? 'Reading…' : 'Browse'}
-          </Button>
+            <Folder size={12} /> Local Folder
+          </button>
+          <button
+            onClick={() => handleTabSwitch('github')}
+            className={`flex-1 flex items-center justify-center gap-1.5 text-xs py-1.5 rounded-md transition-all ${
+              tab === 'github'
+                ? 'bg-violet-600 text-white font-medium'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <GitBranch size={12} /> GitHub URL
+          </button>
         </div>
+
+        {/* Local folder tab */}
+        {tab === 'local' && (
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Folder size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Input
+                value={repoName}
+                readOnly
+                placeholder="Select a local folder…"
+                className="pl-8 bg-[#0d1117] border-white/10 text-slate-200 text-sm placeholder:text-slate-600 focus-visible:ring-violet-500 cursor-default"
+              />
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleBrowse}
+              disabled={browsing}
+              className="border-white/10 bg-[#0d1117] text-slate-300 hover:text-white text-xs gap-1.5 shrink-0"
+            >
+              {browsing ? <Loader2 size={13} className="animate-spin" /> : <FolderSearch size={13} />}
+              {browsing ? 'Reading…' : 'Browse'}
+            </Button>
+          </div>
+        )}
+
+        {/* GitHub URL tab */}
+        {tab === 'github' && (
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Link size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Input
+                  value={githubUrl}
+                  onChange={(e) => { setGitBranchUrl(e.target.value); setGitBranchError(''); setPendingFiles([]); }}
+                  onKeyDown={(e) => e.key === 'Enter' && handleGitBranchFetch()}
+                  placeholder="https://github.com/owner/repo"
+                  className="pl-8 bg-[#0d1117] border-white/10 text-slate-200 text-sm placeholder:text-slate-600 focus-visible:ring-violet-500"
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleGitBranchFetch}
+                disabled={browsing || !githubUrl.trim()}
+                className="border-white/10 bg-[#0d1117] text-slate-300 hover:text-white text-xs gap-1.5 shrink-0"
+              >
+                {browsing ? <Loader2 size={13} className="animate-spin" /> : <GitBranch size={13} />}
+                {browsing ? 'Fetching…' : 'Fetch'}
+              </Button>
+            </div>
+            {githubError && (
+              <p className="text-[11px] text-red-400">{githubError}</p>
+            )}
+          </div>
+        )}
 
         {/* File count preview */}
         {pendingFiles.length > 0 && (
           <div className="flex items-center gap-2 text-[11px] text-violet-400">
             <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse inline-block" />
             {pendingFiles.length} file{pendingFiles.length !== 1 ? 's' : ''} found — ready to index
+            {repoName && <span className="text-slate-500">· {repoName}</span>}
           </div>
         )}
 
         {/* Start indexing button */}
         <Button
           onClick={handleStartIndexing}
-          disabled={!repoPath.trim() || pendingFiles.length === 0 || isIndexing || browsing}
+          disabled={pendingFiles.length === 0 || isIndexing || browsing}
           className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white font-medium gap-2"
         >
           {isIndexing ? (
