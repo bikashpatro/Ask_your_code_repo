@@ -5,7 +5,6 @@
 
 import Link from 'next/link';
 import { Code2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 // Renders the top navbar with logo, nav links, and sign-in button
 export default function Navbar() {
@@ -27,12 +26,6 @@ export default function Navbar() {
         </Link>
       </div>
 
-      <Button
-        size="sm"
-        className="bg-violet-600 hover:bg-violet-700 text-white text-xs px-4 rounded-md"
-      >
-        Sign In
-      </Button>
     </nav>
   );
 }
