@@ -21,7 +21,7 @@ export default function HomeHero() {
       >
         <Badge className="bg-violet-500/10 text-violet-300 border border-violet-500/20 text-xs px-3 py-1 gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-violet-400 inline-block" />
-          AI-Powered · RAG Pipeline · Local Embeddings
+          AI-Powered · RAG Pipeline
         </Badge>
       </motion.div>
 

@@ -25,7 +25,7 @@ export default function StatsBar() {
       </div>
       <div className="flex flex-col gap-1">
         <span className="text-2xl font-bold text-emerald-400">Fast</span>
-        <span className="text-xs text-slate-500">Local Embeddings</span>
+        <span className="text-xs text-slate-500">Fast Inference</span>
       </div>
     </motion.div>
   );

@@ -34,9 +34,6 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Docs</Link>
-          <Link href="#" className="text-sm text-slate-400 hover:text-white transition-colors">GitHub</Link>
-
           {/* Active provider badge */}
           <button
             onClick={() => setShowSettings(true)}
