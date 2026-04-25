@@ -214,7 +214,7 @@ export default function ChatInterface() {
             </div>
             <p className="text-sm font-medium text-slate-300">Ask anything about your codebase</p>
             <p className="text-xs text-slate-600 max-w-xs">
-              Try: "Explain the architecture", "Draw a sequence diagram", or "How does auth work?"
+              {'Try: "Explain the architecture", "Draw a sequence diagram", or "How does auth work?"'}
             </p>
           </div>
         )}

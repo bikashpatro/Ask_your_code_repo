@@ -5,7 +5,6 @@ import {
   Document, Packer, Paragraph, TextRun, HeadingLevel,
   AlignmentType, BorderStyle, ShadingType, Table, TableRow,
   TableCell, WidthType, convertInchesToTwip, PageBreak,
-  TableOfContents, StyleLevel,
 } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -89,6 +88,7 @@ function divider(): Paragraph {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function infoTable(rows: [string, string][]): Table {
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -346,7 +346,7 @@ function developmentPlanSection(): (Paragraph | Table)[] {
   ];
 }
 
-function useCasesSection(): (Paragraph | Table)[] {
+function casesSection(): (Paragraph | Table)[] {
   return [
     sectionHeading('Example Use Cases', '9.'),
     subHeading('Use Case 1 — Understanding Authentication Flow'),
@@ -401,7 +401,7 @@ export async function generateCapstoneReport(): Promise<void> {
     ...benefitsSection(),
     ...developmentPlanSection(),
     pageBreak(),
-    ...useCasesSection(),
+    ...casesSection(),
     pageBreak(),
     ...conclusionSection(),
   ];
