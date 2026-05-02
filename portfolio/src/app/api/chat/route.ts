@@ -31,11 +31,8 @@ function parseResponse(content: string) {
 
 // Build system prompt with indexed file context
 function buildSystemPrompt(fileList: { name: string; path: string }[]): string {
-  const MAX_FILES = 80;
-  const shown = fileList.slice(0, MAX_FILES);
-  const hiddenCount = fileList.length - shown.length;
-  const fileContext = shown.length > 0
-    ? `The repository contains ${fileList.length} files. Here are the first ${shown.length}:\n${shown.map((f) => `- ${f.path || f.name}`).join('\n')}${hiddenCount > 0 ? `\n... and ${hiddenCount} more files.` : ''}`
+  const fileContext = fileList.length > 0
+    ? `Here are the ${fileList.length} most relevant files for this query:\n${fileList.map((f) => `- ${f.path || f.name}`).join('\n')}`
     : 'No files have been indexed yet.';
   return `You are RepoBrainAI, an expert code assistant. You help developers understand their codebase.
 ${fileContext}

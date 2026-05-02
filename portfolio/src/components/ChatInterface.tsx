@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import { addMessage, setLoading } from '@/store/slices/chatSlice';
 import { ChatMessage } from '@/types';
 import dynamic from 'next/dynamic';
+import { rankFilesByQuery } from '@/lib/semanticSearch';
 
 // Load Mermaid renderer only on the client (it uses browser APIs)
 const MermaidDiagram = dynamic(() => import('@/components/MermaidDiagram'), { ssr: false });
@@ -161,7 +162,7 @@ export default function ChatInterface() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: userMsg.content,
-          indexedFiles,
+          indexedFiles: rankFilesByQuery(indexedFiles, userMsg.content, 20),
           history: messages.slice(-6).map((m) => ({ role: m.role, content: m.content })),
           llmConfig,
         }),
