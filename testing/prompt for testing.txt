@@ -1,0 +1,32 @@
+Preconditions
+To proceed with this task, I need it to control your browser. Here's what to check:
+
+Make sure Google Chrome is open on your computer
+The Claude in Chrome extension must be installed and signed in — you should see the Claude icon in your Chrome toolbar
+The extension needs to be active — click the Claude icon in the toolbar to make sure it's connected
+
+Once Chrome is open with the extension running, let me know and I'll retry! If you haven't installed the Claude in Chrome extension yet, you can find it in the Chrome Web Store by searching for "Claude in Chrome".
+
+------------------------------------------------------------------------------------------------------
+
+- I have a url: https://ask-your-code-repo-anoriujkp-bikashpatros-projects.vercel.app/ . Go to this url, click on github url, then enter link: https://github.com/github/maintainermonth 
+
+- Now click on Start Indexing button
+- Wait for 5 seconds
+- Now scroll to the top right of the page, there is  LLM model option, click on settings, select the first option Groq, there are 3 different models and select one model at a time from dropdown list.
+
+- Now Ask below questions
+(1)Summarize the code
+(2)Count the total no of files
+(3)Check what all oops concepts used in code
+(4)Purpose of building this repository
+(5)Sequence diagram for this repository using mermaid feature
+
+- For each question asked wait for the response, after the response is properly loaded, take screenshot of each question with its  response and add it in a word document, Repeat this process for each question,
+
+- After all questions and their respective responses captured in a screenshot and screenshots added in the word document
+
+- Now Change the LLM Model from Groq
+- Repeat this process for all Groq LLM Models
+
+- After each question with its response captured as a screenshot is added to the document, download this word document 
