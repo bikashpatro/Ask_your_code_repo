@@ -4,7 +4,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Folder, FolderSearch, Plus, Loader2, GitBranch, Link } from 'lucide-react';
+import { Folder, FolderSearch, Plus, Loader2, GitBranch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch } from '@/hooks/useAppStore';
@@ -62,8 +62,8 @@ export default function RepoInput() {
   const [pendingFiles, setPendingFiles] = useState<IndexedFile[]>([]);
   const [isIndexing, setIsIndexing] = useState(false);
   const [browsing, setBrowsing] = useState(false);
-  const [githubUrl, setGitBranchUrl] = useState('');
-  const [githubError, setGitBranchError] = useState('');
+  const [githubUrl, setGithubUrl] = useState('');
+  const [githubError, setGithubError] = useState('');
 
   // Handle local folder browse via File System Access API
   const handleBrowse = async () => {
@@ -89,9 +89,9 @@ export default function RepoInput() {
   };
 
   // Fetch file tree from GitHub API via backend route
-  const handleGitBranchFetch = async () => {
+  const handleGithubFetch = async () => {
     if (!githubUrl.trim()) return;
-    setGitBranchError('');
+    setGithubError('');
     setBrowsing(true);
     setPendingFiles([]);
     try {
@@ -102,17 +102,17 @@ export default function RepoInput() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setGitBranchError(data.error ?? 'Failed to fetch repository');
+        setGithubError(data.error ?? 'Failed to fetch repository');
         return;
       }
       setRepoName(data.repoName);
       dispatch(setRepoPath(data.repoName));
       setPendingFiles(data.files);
       if (data.truncated) {
-        setGitBranchError('Repository is very large — only first 100,000 files shown.');
+        setGithubError('Repository is very large — only first 100,000 files shown.');
       }
     } catch {
-      setGitBranchError('Network error. Please check your connection.');
+      setGithubError('Network error. Please check your connection.');
     } finally {
       setBrowsing(false);
     }
@@ -149,7 +149,8 @@ export default function RepoInput() {
     setTab(t);
     setPendingFiles([]);
     setRepoName('');
-    setGitBranchError('');
+    setGithubError('');
+    setBrowsing(false);
     dispatch(setRepoPath(''));
   };
 
@@ -215,26 +216,25 @@ export default function RepoInput() {
         {tab === 'github' && (
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Link size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                <Input
-                  value={githubUrl}
-                  onChange={(e) => { setGitBranchUrl(e.target.value); setGitBranchError(''); setPendingFiles([]); }}
-                  onKeyDown={(e) => e.key === 'Enter' && handleGitBranchFetch()}
-                  placeholder="https://github.com/owner/repo"
-                  className="pl-8 bg-[#0d1117] border-white/10 text-slate-200 text-sm placeholder:text-slate-600 focus-visible:ring-violet-500"
-                />
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleGitBranchFetch}
+              <input
+                type="text"
+                value={githubUrl}
+                onChange={(e) => { setGithubUrl(e.target.value); setGithubError(''); setPendingFiles([]); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleGithubFetch(); }}
+                placeholder="https://github.com/owner/repo"
+                autoComplete="off"
+                spellCheck={false}
+                className="flex-1 bg-[#0d1117] border border-white/10 text-slate-200 text-sm rounded-lg px-3 py-2 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500"
+              />
+              <button
+                type="button"
+                onClick={handleGithubFetch}
                 disabled={browsing || !githubUrl.trim()}
-                className="border-white/10 bg-[#0d1117] text-slate-300 hover:text-white text-xs gap-1.5 shrink-0"
+                className="flex items-center gap-1.5 border border-white/10 bg-[#0d1117] text-slate-300 hover:text-white text-xs px-3 py-2 rounded-lg shrink-0 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 {browsing ? <Loader2 size={13} className="animate-spin" /> : <GitBranch size={13} />}
                 {browsing ? 'Fetching…' : 'Fetch'}
-              </Button>
+              </button>
             </div>
             {githubError && (
               <p className="text-[11px] text-red-400">{githubError}</p>

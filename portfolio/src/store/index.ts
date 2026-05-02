@@ -11,6 +11,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import repoReducer from './slices/repoSlice';
 import chatReducer from './slices/chatSlice';
+import llmReducer from './slices/llmSlice';
 
 // Nested config for repo slice — blacklists indexedFiles so large file lists
 // don't overflow localStorage (5 MB limit).
@@ -23,13 +24,14 @@ const repoPersistConfig = {
 const rootReducer = combineReducers({
   repo: persistReducer(repoPersistConfig, repoReducer),
   chat: chatReducer,
+  llm: llmReducer,
 });
 
 // Root config — same key as before so existing chat history is preserved.
 const rootPersistConfig = {
   key: 'repobrainai-v1',
   storage,
-  whitelist: ['chat', 'repo'],
+  whitelist: ['chat', 'repo', 'llm'],
 };
 
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);

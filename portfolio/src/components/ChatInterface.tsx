@@ -130,6 +130,7 @@ export default function ChatInterface() {
   const indexedFiles = useAppSelector((s) => s.repo.indexedFiles);
   const activeRepo = useAppSelector((s) => s.repo.activeRepo);
   const repositories = useAppSelector((s) => s.repo.repositories);
+  const llmConfig = useAppSelector((s) => s.llm);
   const repoName = (activeRepo ?? repositories[0])?.name ?? 'codebase';
   const session = sessions.find((s) => s.id === activeSessionId);
   const messages = session?.messages ?? [];
@@ -162,6 +163,7 @@ export default function ChatInterface() {
           question: userMsg.content,
           indexedFiles,
           history: messages.slice(-6).map((m) => ({ role: m.role, content: m.content })),
+          llmConfig,
         }),
       });
 
